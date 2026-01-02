@@ -1,45 +1,40 @@
 import cv2
 import os
 
-def extract_350_frames(video_path, output_folder):
-    # Video dosyasını aç
+def extract_frames(video_path, output_folder):
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
-        print("❌ Video açılamadı.")
+        print("Video format not supported")
         return
 
-    # Toplam kare sayısı
     total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    print(f"🎥 Toplam kare sayısı: {total_frames}")
+    print(f"Total frames of your video is {total_frames}")
 
-    # Her kaç karede bir alınacağını hesapla
-    step = max(total_frames // 200, 1)
-    print(f"🔁 Her {step} karede bir alınacak.")
+    step = max(total_frames // 200, 1) "Change the maximum frame number here for the desired frame parse"
+    print(f"A frame will be taken for every {step} frame")
 
-    # Klasörü oluştur
     os.makedirs(output_folder, exist_ok=True)
 
     saved_count = 0
     for i in range(0, total_frames, step):
-        if saved_count >= 200:
+        if saved_count >= 200: "Also change the frame number from here aswell"
             break
         cap.set(cv2.CAP_PROP_POS_FRAMES, i)
         ret, frame = cap.read()
         if not ret:
-            print(f"⚠️ Kare alınamadı: {i}")
+            print(f"Cannot take frame {i}")
             continue
         filename = f"ka_{saved_count:05d}.jpg"
         filepath = os.path.join(output_folder, filename)
         saved = cv2.imwrite(filepath, frame)
         if not saved:
-            print(f"❌ Kaydedilemedi: {filename}")
+            print(f"Cannot save {filename}")
         saved_count += 1
 
     cap.release()
-    print(f"✅ Tamamlandı: {saved_count} kare kaydedildi → {output_folder}")
+    print(f"Saved {saved_count} frames to {output_folder}")
+    
+video_path = "path to your video"
+output_folder = "path to the desired output folder"
 
-# === SENİN BİLGİLERİN ===
-video_path = "/Volumes/UNTITLED/201_1000_1200/repaired_video.mp4"
-output_folder = "/Users/cankisacik/Desktop/KARELER/201/201-1"
-
-extract_350_frames(video_path, output_folder)
+extract_frames(video_path, output_folder)
